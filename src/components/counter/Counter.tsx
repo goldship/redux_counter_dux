@@ -4,6 +4,7 @@ type Props = {
   value: number;
   add(n: number): void;
   increment(): void;
+  asyncAdd(n: number): void;
 };
 
 export default function Counter(props: Props) {
@@ -19,9 +20,20 @@ export default function Counter(props: Props) {
       >
         +3
       </button>
-      <button onClick={() => {
-        increment()
-      }}>+1</button>
+      <button
+        onClick={() => {
+          increment();
+        }}
+      >
+        +1
+      </button>
+      <button
+        onClick={() => {
+          props.asyncAdd(3);
+        }}
+      >
+        async +3
+      </button>
     </div>
   );
 }

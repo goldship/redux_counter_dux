@@ -20,6 +20,7 @@ const enhancer = connect(
   {
     add: CounterActions.add,
     increment: CounterActions.increment,
+    asyncAdd: CounterActions.asyncAdd
   },
 );
 
