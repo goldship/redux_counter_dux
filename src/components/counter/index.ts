@@ -1,5 +1,5 @@
 import { State as RootState } from '../../reducers/index';
-import * as CounterActions from '../../reducers/counter';
+import { ActionDispatcher as CounterActionDispatcher } from '../../reducers/counter';
 import Counter from './Counter';
 import { connect } from 'react-redux';
 
@@ -17,10 +17,9 @@ const mapStateToProps = (state: RootState, props: OuterProps): Props => {
 
 const enhancer = connect(
   mapStateToProps,
-  {
-    add: CounterActions.add,
-    increment: CounterActions.increment,
-  },
+  dispatch => ({
+    counter: new CounterActionDispatcher(dispatch);
+  }),
 );
 
 export default enhancer(Counter);
