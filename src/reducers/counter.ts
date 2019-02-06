@@ -1,6 +1,7 @@
 // action
 const ADD = 'counter/add';
 const INCREMENT = 'couter/increment';
+const ASYNC_ADD = 'counter/async_increment';
 
 type Add = {
   type: typeof ADD;
@@ -13,7 +14,18 @@ type Increment = {
   type: typeof INCREMENT;
 };
 
-type Action = Add | Increment;
+type AsyncAdd = {
+  type: typeof ASYNC_ADD;
+  payload: Promise<{ amount: number }>;
+};
+
+type AsyncAddDone = {
+  type: typeof ASYNC_ADD;
+  payload: { amount: number };
+  error?: boolean;
+};
+
+type Action = Add | Increment | AsyncAddDone;
 
 // action creator
 export function add(amount: number): Add {
@@ -28,6 +40,22 @@ export function add(amount: number): Add {
 export function increment(): Increment {
   return {
     type: INCREMENT,
+  };
+}
+
+export function asyncAdd(n: number): AsyncAdd {
+  return {
+    type: ASYNC_ADD,
+    payload: new Promise((resolve, reject) => {
+      // 1/2で失敗する
+      if (Math.floor(Math.random() * 2) === 0) {
+        reject(new Error('Faild async'));
+      } else {
+        setTimeout(() => {
+          resolve({ amount: n });
+        }, 2000);
+      }
+    }),
   };
 }
 
@@ -47,7 +75,13 @@ export default function(state: State = initialState, action: Action) {
       return { ...state, value: state.value + action.payload.amount };
     case INCREMENT:
       return { ...state, value: state.value + 1 };
+    case ASYNC_ADD:
+      if (action.error) {
+        return { ...state, value: -1 };
+      }
+      return { ...state, value: state.value + action.payload.amount };
+
     default:
-      return state
+      return state;
   }
 }

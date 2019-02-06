@@ -17,10 +17,14 @@ const mapStateToProps = (state: RootState, props: OuterProps): Props => {
 
 const enhancer = connect(
   mapStateToProps,
-  {
-    add: CounterActions.add,
-    increment: CounterActions.increment,
-  },
+  dispatch => ({
+    add: (x: number) => dispatch(CounterActions.add(x)),
+    increment: () => dispatch(CounterActions.increment()),
+    asyncAdd: (x: number) => {
+      // dispatchのreturnでPromiseが返ってくるときもあるが推論できていない
+      (dispatch(CounterActions.asyncAdd(x)) as any).catch((e: Error) => console.log(e.message));
+    },
+  }),
 );
 
 export default enhancer(Counter);
